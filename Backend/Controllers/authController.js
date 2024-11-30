@@ -80,6 +80,18 @@ const logOut = async (req, res) => {
   }
 };
 
+const myProfile = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id).select("-password");
+    if (!user) {
+      return res.status(400).json({ message: "User does not exist" });
+    }
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 const getUser = async (req, res) => {
   try {
     const id = req.params.id;
@@ -93,4 +105,4 @@ const getUser = async (req, res) => {
   }
 };
 
-export { signUp, logIn, logOut, getUser };
+export { signUp, logIn, logOut, myProfile, getUser };
