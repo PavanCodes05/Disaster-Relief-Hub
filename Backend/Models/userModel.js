@@ -29,8 +29,8 @@ const userSchema = new mongoose.Schema(
     // Donors
     inventory: [
       {
-        resource: String,
-        quantity: Number,
+        resource: { type: String, required: true },
+        quantity: { type: Number, required: true },
       },
     ],
     recommenededPosts: [

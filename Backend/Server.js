@@ -6,6 +6,7 @@ import cors from "cors";
 import { connectDb } from "./Lib/db.js";
 
 import authRoutes from "./Routes/authRoute.js";
+import donorRoutes from "./Routes/donorRoute.js";
 
 dotenv.config();
 const app = express();
@@ -14,6 +15,7 @@ app.use(cookieParser());
 app.use(cors());
 
 app.use("/api/auth", authRoutes);
+app.use("/api/donor", donorRoutes);
 
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
