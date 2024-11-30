@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { MailIcon, LockIcon } from "lucide-react";
 import useAuthStore from "../../store/useAuthStore";
+import { Link } from "react-router-dom";
 
 const SignupPage = () => {
   const { isLoggingIn, signup } = useAuthStore();
@@ -89,6 +90,12 @@ const SignupPage = () => {
           <button type="submit" className="btn btn-primary w-full max-w-sm">
             Signup
           </button>
+          <p className="text-center mt-4">
+            Already have an account?{" "}
+            <Link to="/login" className="font-bold underline">
+              Login
+            </Link>
+          </p>
         </div>
       </form>
     </div>
