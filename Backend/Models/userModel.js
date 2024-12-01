@@ -43,8 +43,16 @@ const userSchema = new mongoose.Schema(
     // Affected
     affectedPosts: [
       {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Post",
+        title: { type: String, required: true },
+        description: { type: String, required: true },
+        requiredResources: [
+          {
+            resource: { type: String, required: true },
+            quantity: { type: Number, required: true },
+          },
+        ],
+        location: { type: String, required: true },
+        username: { type: String, required: true },
       },
     ],
   },

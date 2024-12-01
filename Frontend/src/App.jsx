@@ -13,6 +13,7 @@ import LoginPage from "./pages/Common/LoginPage";
 import ProfilePage from "./pages/Common/ProfilePage";
 import InventoryPage from "./pages/Donor/InventoryPage";
 import CreatePost from "./pages/Affected/CreatePost";
+import MyPosts from "./pages/Affected/MyPosts";
 
 const App = () => {
   const { authUser, isCheckingAuth, checkAuth } = useAuthStore();
@@ -58,6 +59,12 @@ const App = () => {
           path="/affected/createpost"
           element={
             authUser?.role === "affected" ? <CreatePost /> : <Navigate to="/" />
+          }
+        />
+        <Route
+          path="/affected/myposts"
+          element={
+            authUser?.role === "affected" ? <MyPosts /> : <Navigate to="/" />
           }
         />
       </Routes>

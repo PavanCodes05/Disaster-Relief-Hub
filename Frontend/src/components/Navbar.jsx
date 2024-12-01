@@ -75,7 +75,7 @@ const Navbar = () => {
                       </Link>
                     </li>
                     <li>
-                      <Link to="/myPosts">
+                      <Link to="/affected/myposts">
                         {/* <HiOutlineHome className="w-5 h-5" /> */}
                         <Milestone />
                         <span className="ml-2">My Posts</span>
