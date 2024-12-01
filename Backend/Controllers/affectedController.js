@@ -1,3 +1,4 @@
+import donorAuthorization from "../Middlewares/donorAuthorization.js";
 import Post from "../Models/postModel.js";
 import User from "../Models/userModel.js";
 
@@ -31,6 +32,7 @@ const createPost = async (req, res) => {
     const post = await Post.findById(newPost._id);
 
     const postDetails = {
+      user: post.user,
       title: post.title,
       description: post.description,
       requiredResources: post.requiredResources,
@@ -52,7 +54,7 @@ const createPost = async (req, res) => {
       });
       for (let j = 0; j < donors.length; j++) {
         const donor = donors[j];
-        donor.recommenededPosts.push(newPost._id);
+        donor.recommendedPosts.push(postDetails);
         await donor.save();
       }
     }

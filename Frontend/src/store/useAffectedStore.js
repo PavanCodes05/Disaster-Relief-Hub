@@ -1,7 +1,6 @@
 import { create } from "zustand";
 import { toast } from "react-hot-toast";
 import axiosInstance from "../api/axios.js";
-import { populatePosts } from "../../../Backend/Controllers/affectedController.js";
 
 const useAffectedStore = create((set) => ({
   posts: null,
@@ -10,6 +9,17 @@ const useAffectedStore = create((set) => ({
   getPosts: async () => {
     try {
       const response = await axiosInstance.get("/affected/myposts");
+      set({ posts: response.data });
+    } catch (error) {
+      console.log(error);
+    } finally {
+      set({ isCheckingPosts: false });
+    }
+  },
+
+  recommendedPosts: async () => {
+    try {
+      const response = await axiosInstance.get("/donor/recommendedposts");
       set({ posts: response.data });
     } catch (error) {
       console.log(error);

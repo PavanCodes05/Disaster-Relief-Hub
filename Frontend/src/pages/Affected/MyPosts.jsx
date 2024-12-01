@@ -9,9 +9,9 @@ const MyPosts = () => {
   }, [getPosts]);
 
   console.log("Posts:", posts);
-  //   if (!posts) return <div>Loading...</div>;
+  if (!posts) return <div>Loading...</div>;
   return (
-    <div>
+    <div className="space-y-2">
       {posts.map((post) => (
         <Post key={post._id} {...post} />
       ))}

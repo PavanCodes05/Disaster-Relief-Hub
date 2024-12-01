@@ -7,6 +7,17 @@ const useDonorStore = create((set) => ({
   inventory: null,
   isCheckingInventory: true,
 
+  recommendedPosts: async () => {
+    try {
+      const response = await axiosInstance.get("/donor/recommendedposts");
+      set({ posts: response.data.posts });
+    } catch (error) {
+      console.log(error);
+    } finally {
+      set({ isCheckingPosts: false });
+    }
+  },
+
   getInventory: async () => {
     try {
       const response = await axiosInstance.get("/donor/inventory");

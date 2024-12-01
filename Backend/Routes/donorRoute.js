@@ -4,6 +4,7 @@ import {
   getInventory,
   addInventory,
   deleteInventory,
+  getRecommendedPosts,
 } from "../Controllers/donorController.js";
 import authenticate from "../Middlewares/authenticationMiddleware.js";
 import donorAuthorization from "../Middlewares/donorAuthorization.js";
@@ -18,6 +19,12 @@ router.post(
   authenticate,
   donorAuthorization,
   deleteInventory
+);
+router.get(
+  "/recommendedposts",
+  authenticate,
+  donorAuthorization,
+  getRecommendedPosts
 );
 
 export default router;

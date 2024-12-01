@@ -14,6 +14,7 @@ import ProfilePage from "./pages/Common/ProfilePage";
 import InventoryPage from "./pages/Donor/InventoryPage";
 import CreatePost from "./pages/Affected/CreatePost";
 import MyPosts from "./pages/Affected/MyPosts";
+import RecommendedPosts from "./pages/Donor/RecommendedPosts";
 
 const App = () => {
   const { authUser, isCheckingAuth, checkAuth } = useAuthStore();
@@ -35,7 +36,13 @@ const App = () => {
       <Routes>
         <Route
           path="/"
-          element={authUser ? <HomePage /> : <Navigate to="/login" />}
+          element={
+            authUser && authUser?.role === "affected" ? (
+              <CreatePost />
+            ) : (
+              <Navigate to="/donors/recommendedposts" />
+            )
+          }
         />
         <Route
           path="/signup"
@@ -53,6 +60,10 @@ const App = () => {
         <Route
           path="/donor/inventory"
           element={authUser ? <InventoryPage /> : <Navigate to="/" />}
+        />
+        <Route
+          path="/donors/recommendedposts"
+          element={authUser ? <RecommendedPosts /> : <Navigate to="/login" />}
         />
         {/* Affected Routes */}
         <Route

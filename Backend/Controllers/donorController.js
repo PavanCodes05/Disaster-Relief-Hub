@@ -51,4 +51,14 @@ const deleteInventory = async (req, res) => {
   }
 };
 
-export { getInventory, addInventory, deleteInventory };
+const getRecommendedPosts = async (req, res) => {
+  try {
+    const donor = req.user;
+    const recommendedPosts = donor.recommendedPosts;
+    res.status(200).json({ posts: recommendedPosts });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export { getInventory, addInventory, deleteInventory, getRecommendedPosts };
