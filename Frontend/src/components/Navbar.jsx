@@ -57,7 +57,7 @@ const Navbar = () => {
                 {authUser.role === "donor" && (
                   <>
                     <li>
-                      <Link to="/inventory">
+                      <Link to="/donor/inventory">
                         {/* <HiOutlineHome className="w-5 h-5" /> */}
                         <Refrigerator />
                         <span className="ml-2">Inventory</span>

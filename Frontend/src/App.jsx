@@ -11,6 +11,7 @@ import HomePage from "./pages/Common/HomePage";
 import SignupPage from "./pages/Common/SignupPage";
 import LoginPage from "./pages/Common/LoginPage";
 import ProfilePage from "./pages/Common/ProfilePage";
+import InventoryPage from "./pages/Donor/InventoryPage";
 
 const App = () => {
   const { authUser, isCheckingAuth, checkAuth } = useAuthStore();
@@ -45,6 +46,11 @@ const App = () => {
         <Route
           path="/myprofile/"
           element={authUser ? <ProfilePage /> : <Navigate to="/login" />}
+        />
+        {/* Donor Routes */}
+        <Route
+          path="/donor/inventory"
+          element={authUser ? <InventoryPage /> : <Navigate to="/" />}
         />
       </Routes>
       <Toaster />

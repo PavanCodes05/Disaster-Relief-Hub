@@ -2,7 +2,7 @@ const getInventory = async (req, res) => {
   try {
     const donor = req.user;
     const inventory = donor.inventory;
-    res.status(200).json(inventory);
+    res.status(200).json({ resources: inventory });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -17,9 +17,7 @@ const addInventory = async (req, res) => {
       if (donor.inventory[i].resource === resource) {
         donor.inventory[i].quantity += quantity;
         await donor.save();
-        return res
-          .status(200)
-          .json({ message: "Inventory updated successfully" });
+        return res.status(200).json({ resources: donor.inventory });
       }
     }
 
@@ -27,7 +25,7 @@ const addInventory = async (req, res) => {
 
     await donor.save();
 
-    res.status(200).json({ message: "Inventory added successfully" });
+    return res.status(200).json({ resources: donor.inventory });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -41,11 +39,13 @@ const deleteInventory = async (req, res) => {
       (item) => item.resource === resource
     );
     if (index === -1) {
-      return res.status(404).json({ message: "Resource not found" });
+      return res.status(404).json({ resources: donor.inventory });
+      // return res.status(404).json({ message: "Resource not found" });
     }
     donor.inventory.splice(index, 1);
     await donor.save();
-    res.status(200).json({ message: "Resource deleted successfully" });
+
+    res.status(200).json({ resources: donor.inventory });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
