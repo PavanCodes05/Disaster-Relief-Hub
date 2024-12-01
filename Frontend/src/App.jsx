@@ -12,6 +12,7 @@ import SignupPage from "./pages/Common/SignupPage";
 import LoginPage from "./pages/Common/LoginPage";
 import ProfilePage from "./pages/Common/ProfilePage";
 import InventoryPage from "./pages/Donor/InventoryPage";
+import CreatePost from "./pages/Affected/CreatePost";
 
 const App = () => {
   const { authUser, isCheckingAuth, checkAuth } = useAuthStore();
@@ -51,6 +52,13 @@ const App = () => {
         <Route
           path="/donor/inventory"
           element={authUser ? <InventoryPage /> : <Navigate to="/" />}
+        />
+        {/* Affected Routes */}
+        <Route
+          path="/affected/createpost"
+          element={
+            authUser?.role === "affected" ? <CreatePost /> : <Navigate to="/" />
+          }
         />
       </Routes>
       <Toaster />

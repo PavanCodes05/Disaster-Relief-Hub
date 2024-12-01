@@ -68,7 +68,7 @@ const Navbar = () => {
                 {authUser.role === "affected" && (
                   <>
                     <li>
-                      <Link to="/createpost">
+                      <Link to="/affected/createpost">
                         {/* <HiOutlineHome className="w-5 h-5" /> */}
                         <Repeat2 />
                         <span className="ml-2">Create Post</span>
