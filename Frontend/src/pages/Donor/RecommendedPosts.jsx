@@ -14,9 +14,11 @@ const RecommendedPosts = () => {
   if (!posts) return <div>Loading...</div>;
   return (
     <div>
-      {posts.map((post) => (
-        <Post key={post._id} {...post} />
-      ))}
+      {posts.map(
+        (post, index) => (
+          console.log(post._id), (<Post key={index} {...post} />)
+        )
+      )}
     </div>
   );
 };
