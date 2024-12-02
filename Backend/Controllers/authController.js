@@ -82,11 +82,20 @@ const logOut = async (req, res) => {
 
 const myProfile = async (req, res) => {
   try {
-    const user = await User.findById(req.user._id).select("-password");
+    const user = await User.findById(req.user._id)
+      .select("-password")
+      .populate("affectedPosts");
     if (!user) {
       return res.status(400).json({ message: "User does not exist" });
     }
-    res.status(200).json(user);
+    return res.status(200).json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      affectedPosts: user.affectedPosts,
+      recommendedPosts: user.recommendedPosts,
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

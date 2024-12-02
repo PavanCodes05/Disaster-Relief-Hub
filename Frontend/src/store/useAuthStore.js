@@ -12,7 +12,16 @@ const useAuthStore = create((set) => ({
 
   checkAuth: async () => {
     try {
-      const response = await axiosInstance.get("/auth/myprofile");
+      const token = localStorage.getItem("jwt");
+      if (!token) {
+        return False;
+      }
+      const response = await axiosInstance.get("/auth/myprofile", {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
       set({ authUser: response.data });
       console.log(authUser);
     } catch (error) {
@@ -56,6 +65,7 @@ const useAuthStore = create((set) => ({
     set({ isLoggingOut: true });
 
     try {
+      // localStorage.removeItem("jwt");
       await axiosInstance.post("/auth/logout");
       set({ authUser: null });
       toast.success("Logged out successfully");
