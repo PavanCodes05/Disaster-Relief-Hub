@@ -9,6 +9,7 @@ const MyPosts = () => {
   }, [getPosts]);
 
   console.log("Posts:", posts);
+  // let recentPosts = posts.reverse();
   if (!posts) return <div>Loading...</div>;
   return (
     <div className="space-y-2">
