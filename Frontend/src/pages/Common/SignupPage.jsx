@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { MailIcon, LockIcon } from "lucide-react";
+import { MailIcon, LockIcon, SquareUserRound } from "lucide-react";
 import useAuthStore from "../../store/useAuthStore";
 import { Link } from "react-router-dom";
 
@@ -44,7 +44,7 @@ const SignupPage = () => {
         </div>
         <div className="order-2 md:order-1 w-full md:w-auto flex flex-col items-center md:items-start">
           <label className="input input-bordered flex items-center gap-2 w-full max-w-sm mb-4">
-            <MailIcon className="text-gray-400" />
+            <SquareUserRound className="text-gray-400" />
             <input
               type="text"
               className="flex-grow"

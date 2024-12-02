@@ -6,7 +6,9 @@ const ProfilePage = () => {
   const { authUser, isCheckingAuth, checkAuth } = useAuthStore();
 
   // checkAuth();
-  console.log(authUser);
+  useEffect(() => {
+    checkAuth();
+  }, [checkAuth]);
 
   if (isCheckingAuth && !authUser)
     return (

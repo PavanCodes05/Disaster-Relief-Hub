@@ -14,7 +14,7 @@ const useAuthStore = create((set) => ({
     try {
       const response = await axiosInstance.get("/auth/myprofile");
       set({ authUser: response.data });
-      console.log(response.data);
+      console.log("authUser: ", response.data);
     } catch (error) {
       set({ authUser: null });
     } finally {
