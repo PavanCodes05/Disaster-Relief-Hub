@@ -131,7 +131,7 @@ const InventoryPage = () => {
                   <td>{resource.quantity}</td>
                   <td
                     className="hover:text-red-500 hover:cursor-pointer"
-                    onClick={() => deleteResource(resource.resource)}
+                    onClick={() => deleteResource(resource)}
                   >
                     <FaTrash />
                   </td>

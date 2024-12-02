@@ -101,7 +101,9 @@ const Navbar = () => {
           )}
         </div>
         <div className="navbar-center">
-          <a className="btn btn-ghost text-xl">Disaster Relief Hub</a>
+          <a className="btn btn-ghost text-xl">
+            <Link to="/">Disaster Relief Hub</Link>
+          </a>
         </div>
         <div className="navbar-end flex items-center">
           {authUser && (
