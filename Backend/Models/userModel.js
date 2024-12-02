@@ -27,6 +27,10 @@ const userSchema = new mongoose.Schema(
     ],
 
     // Donors
+    donations: {
+      type: Number,
+      default: 0,
+    },
     inventory: [
       {
         resource: { type: String, required: true },

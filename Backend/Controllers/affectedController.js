@@ -39,26 +39,45 @@ const createPost = async (req, res) => {
       username: user.name,
     };
 
-    // user.affectedPosts.push(postDetails);
-    user.affectedPosts.splice(0, 0, postDetails);
-    // user.affectedPosts.push(newPost._id);
+    user.affectedPosts.unshift(postDetails);
     await user.save();
 
-    // Recommendation System
-    for (let i = 0; i < newPost.requiredResources.length; i++) {
-      const resource = newPost.requiredResources[i].resource;
-      const quantity = newPost.requiredResources[i].quantity;
+    let matchingDonors = [];
 
-      const donors = await User.find({
-        inventory: { $elemMatch: { resource, quantity: { $gte: quantity } } },
+    for (let req of requiredResources) {
+      let findDonor = await User.findOne({
+        inventory: {
+          $elemMatch: {
+            resource: req.resource,
+            quantity: { $gte: req.quantity },
+          },
+        },
       });
-      for (let j = 0; j < donors.length; j++) {
-        const donor = donors[j];
-        // donor.recommendedPosts.push(postDetails);
-        donor.recommendedPosts.splice(0, 0, postDetails);
-        await donor.save();
+      if (findDonor == null) continue;
+      matchingDonors.push(findDonor);
+    }
+
+    let uniqueDonors = new Set();
+
+    for (let j = 0; j < matchingDonors.length; j++) {
+      const donorMatch = matchingDonors[j];
+
+      if (!uniqueDonors.has(donorMatch._id.toString())) {
+        await User.findByIdAndUpdate(
+          donorMatch._id,
+          {
+            $push: {
+              recommendedPosts: { $each: [postDetails], $position: 0 },
+            },
+          },
+          { new: true }
+        );
+
+        uniqueDonors.add(donorMatch._id.toString());
       }
     }
+
+    console.log("Pushed");
 
     return res.status(201).json(newPost);
   } catch (error) {

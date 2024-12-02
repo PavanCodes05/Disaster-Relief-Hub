@@ -98,6 +98,7 @@ const myProfile = async (req, res) => {
       role: user.role,
       affectedPosts: user.affectedPosts,
       recommendedPosts: user.recommendedPosts,
+      donations: user.donations,
     });
   } catch (error) {
     res.status(500).json({ message: error.message });

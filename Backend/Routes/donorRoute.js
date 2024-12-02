@@ -5,6 +5,7 @@ import {
   addInventory,
   deleteInventory,
   getRecommendedPosts,
+  makeDonation,
 } from "../Controllers/donorController.js";
 import authenticate from "../Middlewares/authenticationMiddleware.js";
 import donorAuthorization from "../Middlewares/donorAuthorization.js";
@@ -25,6 +26,13 @@ router.get(
   authenticate,
   donorAuthorization,
   getRecommendedPosts
+);
+
+router.post(
+  "/makedonation/:id",
+  authenticate,
+  donorAuthorization,
+  makeDonation
 );
 
 export default router;

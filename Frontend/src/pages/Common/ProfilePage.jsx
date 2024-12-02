@@ -32,7 +32,9 @@ const ProfilePage = () => {
             {authUser?.role === "affected" && (
               <div>Number Of Posts: {authUser?.affectedPosts?.length || 0}</div>
             )}
-            {authUser?.role === "donor" && <div>Number Of Donations: 2</div>}
+            {authUser?.role === "donor" && (
+              <div>Number Of Donations: {authUser.donations}</div>
+            )}
           </div>
         </div>
       </div>
