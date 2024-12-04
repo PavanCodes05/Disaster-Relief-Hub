@@ -31,6 +31,7 @@ const createPost = async (req, res) => {
     const post = await Post.findById(newPost._id);
 
     const postDetails = {
+      id: post._id,
       user: post.user,
       title: post.title,
       description: post.description,

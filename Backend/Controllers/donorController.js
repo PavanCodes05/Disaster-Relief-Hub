@@ -85,21 +85,22 @@ const makeDonation = async (req, res) => {
         }
       }
     }
-
-    const resouceIds = [];
-    post.requiredResources.map((resource) => {
-      resouceIds.push(resource._id);
-    });
-
-    console.log(resouceIds);
-
     for (let i = 0; i < donations.length; i++) {
       for (let j = 0; j < post.requiredResources.length; j++) {
         if (post.requiredResources[j].resource === donations[i].resource) {
           post.requiredResources[j].quantity -= donations[i].quantity;
+          if (post.requiredResources[j].quantity <= 0) {
+            post.requiredResources.splice(j, 1);
+          }
         }
       }
     }
+
+    // Explicitly mark the array as modified
+    post.markModified("requiredResources");
+
+    // Save the document
+    await post.save();
 
     for (let i = 0; i < donations.length; i++) {
       for (let j = 0; j < donor.inventory.length; j++) {
@@ -109,12 +110,14 @@ const makeDonation = async (req, res) => {
       }
     }
 
+    donor.donations += 1;
+
     await post.save();
     await donor.save();
 
     return res.status(200).json({ message: "Donation successful" });
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    res.status(500).json({ message: error.message });
   }
 };
 
