@@ -28,11 +28,6 @@ router.get(
   getRecommendedPosts
 );
 
-router.post(
-  "/makedonation/:id",
-  authenticate,
-  donorAuthorization,
-  makeDonation
-);
+router.post("/makedonation", authenticate, donorAuthorization, makeDonation);
 
 export default router;

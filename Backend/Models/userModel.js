@@ -37,11 +37,6 @@ const userSchema = new mongoose.Schema(
         quantity: { type: Number, required: true },
       },
     ],
-    recommendedPosts: [
-      {
-        id: { type: mongoose.Schema.Types.ObjectId, ref: "Post" },
-      },
-    ],
     // Affected
     affectedPosts: [
       { id: { type: mongoose.Schema.Types.ObjectId, ref: "Post" } },

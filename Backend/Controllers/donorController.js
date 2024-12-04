@@ -86,7 +86,7 @@ const getRecommendedPosts = async (req, res) => {
 const makeDonation = async (req, res) => {
   try {
     const { donations } = req.body;
-    const postId = req.params.id;
+    const { postId } = req.body;
     const post = await Post.findById(postId);
 
     if (!post) {

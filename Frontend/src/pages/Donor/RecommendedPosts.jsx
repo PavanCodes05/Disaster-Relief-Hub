@@ -11,7 +11,13 @@ const RecommendedPosts = () => {
     recommendedPosts();
   }, [recommendedPosts]);
 
-  if (!posts) return <div>Loading...</div>;
+  if (!posts) {
+    return (
+      <div className="flex items-center justify-center h-screen text-2xl">
+        Loading...
+      </div>
+    );
+  }
   if (posts.length === 0)
     return (
       <div className="flex items-center justify-center h-screen text-2xl">
@@ -21,9 +27,7 @@ const RecommendedPosts = () => {
   return (
     <div>
       {posts.map(
-        (post, index) => (
-          console.log(post._id), (<Post key={post._id} {...post} />)
-        )
+        (post) => (console.log(post._id), (<Post key={post._id} {...post} />))
       )}
     </div>
   );

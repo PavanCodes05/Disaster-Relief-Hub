@@ -53,6 +53,16 @@ const useDonorStore = create((set) => ({
       console.log(error);
     }
   },
+
+  makeDonation: async (data) => {
+    try {
+      const response = await axiosInstance.post(`/donor/makedonation`, data);
+      toast.success("Donation made successfully");
+      console.log(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  },
 }));
 
 export default useDonorStore;

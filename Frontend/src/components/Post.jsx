@@ -1,10 +1,9 @@
 import React, { useState } from "react";
 
 import useAuthStore from "../store/useAuthStore";
+import useDonorStore from "../store/useDonorStore";
 
 const Post = (post) => {
-  const { authUser } = useAuthStore();
-
   const [resource, setResource] = useState("");
   const [quantity, setQuantity] = useState(1);
 
@@ -44,8 +43,23 @@ const Post = (post) => {
 };
 
 const DonateModal = ({ post }) => {
+  const { authUser } = useAuthStore();
+
   const [resource, setResource] = useState("");
   const [quantity, setQuantity] = useState(1);
+  const { makeDonation } = useDonorStore();
+
+  const [formData, setFormData] = useState({ donations: [], postId: "" });
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setFormData({
+      ...formData,
+      postId: post._id,
+      donations: [...formData.donations, { resource, quantity }],
+    });
+    makeDonation(formData);
+  };
 
   return (
     <dialog id={`my_modal_${post._id}`} className="modal">
@@ -99,9 +113,7 @@ const DonateModal = ({ post }) => {
           <button
             className="btn btn-primary mt-2 w-full"
             type="button"
-            onClick={() => {
-              console.log(resource, quantity);
-            }}
+            onClick={handleSubmit}
           >
             Donate
           </button>
