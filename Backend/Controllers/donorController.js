@@ -56,9 +56,28 @@ const deleteInventory = async (req, res) => {
 
 const getRecommendedPosts = async (req, res) => {
   try {
-    const donor = req.user;
-    const recommendedPosts = donor.recommendedPosts;
-    res.status(200).json({ posts: recommendedPosts });
+    const posts = await Post.find({
+      requiredResources: {
+        $elemMatch: {
+          resource: { $in: req.user.inventory.map((item) => item.resource) },
+        },
+      },
+    }).populate("user");
+
+    const postDetails = [];
+
+    for (const post of posts) {
+      postDetails.push({
+        _id: post._id,
+        title: post.title,
+        description: post.description,
+        requiredResources: post.requiredResources,
+        location: post.location,
+        username: post.user.name,
+      });
+    }
+
+    res.status(200).json({ posts: postDetails });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

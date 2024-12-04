@@ -28,57 +28,8 @@ const createPost = async (req, res) => {
     });
     await newPost.save();
 
-    const post = await Post.findById(newPost._id);
-
-    const postDetails = {
-      id: post._id,
-      user: post.user,
-      title: post.title,
-      description: post.description,
-      requiredResources: post.requiredResources,
-      location: post.location,
-      username: user.name,
-    };
-
-    user.affectedPosts.unshift(postDetails);
+    user.affectedPosts.unshift(newPost._id);
     await user.save();
-
-    let matchingDonors = [];
-
-    for (let req of requiredResources) {
-      let findDonor = await User.findOne({
-        inventory: {
-          $elemMatch: {
-            resource: req.resource,
-            quantity: { $gte: req.quantity },
-          },
-        },
-      });
-      if (findDonor == null) continue;
-      matchingDonors.push(findDonor);
-    }
-
-    let uniqueDonors = new Set();
-
-    for (let j = 0; j < matchingDonors.length; j++) {
-      const donorMatch = matchingDonors[j];
-
-      if (!uniqueDonors.has(donorMatch._id.toString())) {
-        await User.findByIdAndUpdate(
-          donorMatch._id,
-          {
-            $push: {
-              recommendedPosts: { $each: [postDetails], $position: 0 },
-            },
-          },
-          { new: true }
-        );
-
-        uniqueDonors.add(donorMatch._id.toString());
-      }
-    }
-
-    console.log("Pushed");
 
     return res.status(201).json(newPost);
   } catch (error) {
@@ -92,7 +43,32 @@ const getMyPosts = async (req, res) => {
     if (!user) {
       return res.status(400).json({ message: "User does not exist" });
     }
-    return res.status(200).json(user.affectedPosts);
+
+    const posts = user.affectedPosts.map((postId) => postId);
+    // console.log(posts);
+
+    const postDetails = [];
+
+    for (const id of posts) {
+      const post = await Post.findById(id).populate("user");
+
+      if (!post) {
+        return res.status(404).json({ message: "Post not found" });
+      }
+
+      postDetails.push({
+        _id: post._id,
+        title: post.title,
+        description: post.description,
+        requiredResources: post.requiredResources,
+        location: post.location,
+        username: post.user.name,
+      });
+    }
+
+    console.log(postDetails);
+
+    return res.status(200).json(postDetails);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
