@@ -31,6 +31,7 @@ const InventoryPage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    console.log(formData);
     addResource(formData);
     setFormData({ resource: "", quantity: 1 });
     // getInventory();
@@ -83,8 +84,8 @@ const InventoryPage = () => {
                 type="number"
                 placeholder="Type here"
                 name="quantity"
-                onChange={handleChangeQuantity}
                 value={formData.quantity}
+                onChange={handleChangeQuantity}
                 className="input input-bordered w-full max-w-xs mt-2"
               />
             </label>

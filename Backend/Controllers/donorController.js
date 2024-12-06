@@ -18,7 +18,7 @@ const addInventory = async (req, res) => {
 
     for (let i = 0; i < donor.inventory.length; i++) {
       if (donor.inventory[i].resource === resource) {
-        donor.inventory[i].quantity += quantity;
+        donor.inventory[i].quantity += Number(quantity);
         await donor.save();
         return res.status(200).json({ resources: donor.inventory });
       }

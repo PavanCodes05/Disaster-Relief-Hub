@@ -5,11 +5,11 @@ import useDonorStore from "../../store/useDonorStore";
 import Post from "../../components/Post";
 
 const RecommendedPosts = () => {
-  const { recommendedPosts, posts } = useDonorStore();
+  const { recommendedPosts, posts, makeDonation } = useDonorStore();
 
   useEffect(() => {
     recommendedPosts();
-  }, [recommendedPosts]);
+  }, [recommendedPosts, makeDonation]);
 
   if (!posts) {
     return (

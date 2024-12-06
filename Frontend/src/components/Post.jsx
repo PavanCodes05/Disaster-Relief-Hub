@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import useAuthStore from "../store/useAuthStore";
 import useDonorStore from "../store/useDonorStore";
@@ -44,21 +44,45 @@ const Post = (post) => {
 
 const DonateModal = ({ post }) => {
   const { authUser } = useAuthStore();
+  const { inventory, getInventory } = useDonorStore();
+  const commonResources = [];
+
+  useEffect(() => {
+    getInventory();
+  }, []);
+
+  for (let i = 0; i < post.requiredResources.length; i++) {
+    for (let j = 0; j < inventory?.length; j++) {
+      if (post.requiredResources[i].resource === inventory[j].resource) {
+        commonResources.push(post.requiredResources[i].resource);
+      }
+    }
+  }
 
   const [resource, setResource] = useState("");
   const [quantity, setQuantity] = useState(1);
   const { makeDonation } = useDonorStore();
 
-  const [formData, setFormData] = useState({ donations: [], postId: "" });
+  const [formData, setFormData] = useState({ donations: [], postId: post._id });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log(formData);
+    await makeDonation(formData);
+    document.getElementById(`my_modal_${post._id}`).close();
+    window.location.reload();
+  };
+
+  const handleAdd = () => {
     setFormData({
       ...formData,
-      postId: post._id,
-      donations: [...formData.donations, { resource, quantity }],
+      donations: [
+        ...formData.donations,
+        { resource, quantity: Number(quantity) },
+      ],
     });
-    makeDonation(formData);
+    setResource("");
+    setQuantity(1);
   };
 
   return (
@@ -77,6 +101,14 @@ const DonateModal = ({ post }) => {
             </li>
           ))}
         </ul>
+        <p className="py-4">Donations:</p>
+        <ul className="list-disc list-inside mt-2 ">
+          {formData.donations.map((donation) => (
+            <li key={`${donation.resource}-${donation.quantity}`}>
+              {donation.resource}:{donation.quantity}
+            </li>
+          ))}
+        </ul>
         <form>
           <select
             className="select select-bordered w-full max-w-xs mt-2"
@@ -85,9 +117,15 @@ const DonateModal = ({ post }) => {
           >
             <option value="">Select Resource</option>
 
-            {post.requiredResources.map((item) => (
+            {/* {post.requiredResources.map((item) => (
               <option value={item.resource} key={item.resource}>
                 {item.resource}
+              </option>
+            ))} */}
+
+            {commonResources.map((item) => (
+              <option value={item} key={item}>
+                {item}
               </option>
             ))}
           </select>
@@ -97,15 +135,16 @@ const DonateModal = ({ post }) => {
             className="input input-bordered input-primary w-full max-w-xs mt-2"
             value={quantity}
             min={1}
-            max={post.requiredResources.map((item) => item.quantity)}
+            max={
+              post.requiredResources.find((item) => item.resource === resource)
+                ?.quantity || 1
+            }
             onChange={(e) => setQuantity(e.target.valueAsNumber)}
           />
           <button
             className="btn btn-primary mt-2 w-full"
             type="button"
-            onClick={() => {
-              console.log(resource, quantity);
-            }}
+            onClick={handleAdd}
           >
             Add
           </button>
