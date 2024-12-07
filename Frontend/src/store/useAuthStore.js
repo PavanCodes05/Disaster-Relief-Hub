@@ -7,6 +7,7 @@ const useAuthStore = create((set) => ({
   isSigningUp: false,
   isLoggingIn: false,
   isLoggingOut: false,
+  notifications: null,
 
   isCheckingAuth: true,
 
@@ -64,6 +65,15 @@ const useAuthStore = create((set) => ({
       console.log(error);
     } finally {
       set({ isLoggingOut: false });
+    }
+  },
+
+  getNotifications: async () => {
+    try {
+      const response = await axiosInstance.get("/notifications/all");
+      set({ notifications: response.data });
+    } catch (error) {
+      console.log(error);
     }
   },
 }));

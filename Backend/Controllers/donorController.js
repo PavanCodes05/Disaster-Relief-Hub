@@ -1,5 +1,6 @@
 import Post from "../Models/postModel.js";
 import User from "../Models/userModel.js";
+import Notification from "../Models/notificationModel.js";
 
 const getInventory = async (req, res) => {
   try {
@@ -133,6 +134,18 @@ const makeDonation = async (req, res) => {
 
     await post.save();
     await donor.save();
+
+    // Notification
+    const notification = new Notification({
+      title: "Donation",
+      description: `${req.user.name} has donated you ${donations.map(
+        (donation) => `${donation.quantity} ${donation.resource}`
+      )}`,
+      from: req.user._id,
+      to: post.user._id,
+      type: "donation",
+    });
+    await notification.save();
 
     return res.status(200).json({ message: "Donation successful" });
   } catch (error) {

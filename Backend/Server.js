@@ -8,6 +8,7 @@ import { connectDb } from "./Lib/db.js";
 import authRoutes from "./Routes/authRoute.js";
 import donorRoutes from "./Routes/donorRoute.js";
 import affectedRoutes from "./Routes/affectedRoute.js";
+import notificationRoutes from "./Routes/notificationRoute.js";
 
 dotenv.config();
 const app = express();
@@ -23,6 +24,7 @@ app.use(
 app.use("/api/auth", authRoutes);
 app.use("/api/donor", donorRoutes);
 app.use("/api/affected", affectedRoutes);
+app.use("/api/notifications", notificationRoutes);
 
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
