@@ -119,7 +119,6 @@ const makeDonation = async (req, res) => {
     // Explicitly mark the array as modified
     post.markModified("requiredResources");
 
-    // Save the document
     await post.save();
 
     for (let i = 0; i < donations.length; i++) {
@@ -132,8 +131,22 @@ const makeDonation = async (req, res) => {
 
     donor.donations += 1;
 
+    const receiver = await User.findById(post.user._id);
+
+    // console.log("pushing");
+    // console.log(receiver.chats);
+    // console.log(donor);
+    // console.log(donor.chats);
+    if (!donor.chats.includes(receiver._id)) {
+      donor.chats.unshift(receiver._id);
+    }
+    if (!receiver.chats.includes(req.user._id)) {
+      receiver.chats.unshift(req.user._id);
+    }
+
     await post.save();
     await donor.save();
+    await receiver.save();
 
     // Notification
     const notification = new Notification({
