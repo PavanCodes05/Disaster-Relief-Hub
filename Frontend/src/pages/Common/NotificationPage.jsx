@@ -1,9 +1,11 @@
 import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 import useAuthStore from "../../store/useAuthStore";
-import { ConstructionIcon } from "lucide-react";
 
 const Notification = ({ notification }) => {
+  const navigate = useNavigate();
+
   if (!notification) {
     return (
       <div className="flex items-center justify-center h-screen text-2xl">
@@ -20,7 +22,14 @@ const Notification = ({ notification }) => {
           <p className="card-side">From: {notification.from.name}</p>
           <p className="card-side">To: {notification.to.name}</p>
           <div className="card-actions justify-end">
-            <button className="btn">Chat</button>
+            <button
+              className="btn"
+              onClick={() => {
+                navigate(`/chat/${notification.from._id}`);
+              }}
+            >
+              Chat
+            </button>
           </div>
         </div>
       </div>
