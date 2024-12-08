@@ -84,7 +84,7 @@ const Navbar = () => {
                   </>
                 )}
                 <li>
-                  <Link to="/chats">
+                  <Link to="/chatprofiles">
                     {/* <HiOutlineHome className="w-5 h-5" /> */}
                     <MessageCircleCode />
                     <span className="ml-2">Chats</span>

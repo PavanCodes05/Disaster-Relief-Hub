@@ -16,6 +16,7 @@ import CreatePost from "./pages/Affected/CreatePost";
 import MyPosts from "./pages/Affected/MyPosts";
 import RecommendedPosts from "./pages/Donor/RecommendedPosts";
 import NotificationPage from "./pages/Common/NotificationPage";
+import ChatProfiles from "./pages/Common/ChatProfiles";
 
 const App = () => {
   const { authUser, isCheckingAuth, checkAuth } = useAuthStore();
@@ -61,6 +62,10 @@ const App = () => {
           path="/notifications"
           element={authUser ? <NotificationPage /> : <Navigate to="/login" />}
         />
+        <Route
+          path="/chatprofiles"
+          element={authUser ? <ChatProfiles /> : <Navigate to="/login" />}
+        />
         {/* Donor Routes */}
         <Route
           path="/donor/inventory"
@@ -70,6 +75,7 @@ const App = () => {
           path="/donors/recommendedposts"
           element={authUser ? <RecommendedPosts /> : <Navigate to="/login" />}
         />
+
         {/* Affected Routes */}
         <Route
           path="/affected/createpost"

@@ -8,6 +8,8 @@ const useAuthStore = create((set) => ({
   isLoggingIn: false,
   isLoggingOut: false,
   notifications: null,
+  chats: [],
+  isCheckingProfiles: false,
 
   isCheckingAuth: true,
 
@@ -74,6 +76,19 @@ const useAuthStore = create((set) => ({
       set({ notifications: response.data });
     } catch (error) {
       console.log(error);
+    }
+  },
+
+  getChats: async () => {
+    set({ isCheckingProfiles: true });
+    try {
+      const response = await axiosInstance.get("/chats/all");
+      set({ chats: response.data.chats });
+      console.log(response.data.chats);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      set({ isCheckingProfiles: false });
     }
   },
 }));
