@@ -20,7 +20,7 @@ import ChatProfiles from "./pages/Common/ChatProfiles";
 import ChatContainer from "./pages/Common/ChatContainer";
 
 const App = () => {
-  const { authUser, isCheckingAuth, checkAuth } = useAuthStore();
+  const { authUser, isCheckingAuth, checkAuth, onlineUsers } = useAuthStore();
 
   useEffect(() => {
     checkAuth();

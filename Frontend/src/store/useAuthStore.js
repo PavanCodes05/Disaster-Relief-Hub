@@ -1,17 +1,24 @@
 import { create } from "zustand";
 import axiosInstance from "../api/axios.js";
 import { toast } from "react-hot-toast";
+import { io } from "socket.io-client";
 
-const useAuthStore = create((set) => ({
+const BASE_URL = "http://localhost:5001";
+
+const useAuthStore = create((set, get) => ({
   authUser: null,
   isSigningUp: false,
   isLoggingIn: false,
   isLoggingOut: false,
   notifications: null,
+  selectedUser: null,
   chats: [],
   isCheckingProfiles: false,
-  messages: [],
+  messages: { messages: [] },
   loadingMessages: false,
+  onlineUsers: [],
+
+  socket: null,
 
   isCheckingAuth: true,
 
@@ -19,7 +26,7 @@ const useAuthStore = create((set) => ({
     try {
       const response = await axiosInstance.get("/auth/myprofile");
       set({ authUser: response.data });
-      console.log("authUser: ", response.data);
+      get().connectToSocket();
     } catch (error) {
       set({ authUser: null });
     } finally {
@@ -34,6 +41,7 @@ const useAuthStore = create((set) => ({
       const response = await axiosInstance.post("/auth/signup", data);
       set({ authUser: response.data });
       toast.success("Signed up successfully");
+      get().connectToSocket();
     } catch (error) {
       console.log(error);
       toast.error(error.response.data.message);
@@ -49,6 +57,7 @@ const useAuthStore = create((set) => ({
       const response = await axiosInstance.post("/auth/login", data);
       set({ authUser: response.data });
       toast.success("Logged in successfully");
+      get().connectToSocket();
     } catch (error) {
       console.log(error);
       toast.error(error.response.data.message);
@@ -65,6 +74,7 @@ const useAuthStore = create((set) => ({
       await axiosInstance.post("/auth/logout");
       set({ authUser: null });
       toast.success("Logged out successfully");
+      get().disconnectFromSocket();
     } catch (error) {
       console.log(error);
     } finally {
@@ -95,11 +105,15 @@ const useAuthStore = create((set) => ({
   },
 
   getMessages: async (id) => {
+    const { selectedUser } = get();
+    console.log("Fetching messages for user: ", selectedUser);
     set({ loadingMessages: true });
     try {
-      const response = await axiosInstance.get(`/chats/getmessages/${id}`);
+      const response = await axiosInstance.get(
+        `/chats/getmessages/${selectedUser}`
+      );
+      console.log("Messages response: ", response.data); // Check this!
       set({ messages: response.data });
-      console.log(response.data);
     } catch (error) {
       console.log(error);
     } finally {
@@ -109,11 +123,70 @@ const useAuthStore = create((set) => ({
 
   sendMessage: async (id, data) => {
     try {
-      const response = await axiosInstance.post(`/chats/send/${id}`, data);
-      console.log(response.data);
+      const { selectedUser, messages } = get();
+      const response = await axiosInstance.post(
+        `/chats/send/${selectedUser}`,
+        data
+      );
+
+      console.log("Response data:", response.data);
+
+      const newMessage = response.data.newMessage || response.data;
+
+      if (newMessage) {
+        set({
+          messages: {
+            ...messages,
+            messages: [...messages.messages, newMessage],
+          },
+        });
+      }
     } catch (error) {
-      console.log(error);
+      console.log("Error sending message:", error);
     }
+  },
+
+  setSelectedUser: (user) => set({ selectedUser: user }),
+
+  connectToSocket: () => {
+    const { authUser } = get();
+    if (!authUser || get().socket?.connected) return;
+
+    const socket = io(BASE_URL, {
+      query: {
+        userId: authUser._id,
+      },
+    });
+
+    socket.connect();
+    set({ socket });
+
+    socket.on("join", (users) => {
+      console.log("users", users);
+      set({ onlineUsers: users });
+    });
+  },
+
+  disconnectFromSocket: () => {
+    if (get().socket?.connected) get().socket.disconnect();
+  },
+
+  subscribeToMessages: () => {
+    const { selectedUser, socket, messages } = get();
+    if (!selectedUser || !socket) return;
+
+    socket.on("message", (newMessage) => {
+      set((state) => {
+        const updatedMessages = [...state.messages.messages, newMessage];
+        return { messages: { ...state.messages, messages: updatedMessages } };
+      });
+    });
+  },
+
+  unsubscribeFromMessages: () => {
+    const { selectedUser, socket } = get();
+    if (!selectedUser) return;
+    socket.off("message");
   },
 }));
 

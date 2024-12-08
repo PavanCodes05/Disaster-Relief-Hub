@@ -6,12 +6,17 @@ import { Link } from "react-router-dom";
 
 const ChatProfiles = () => {
   const navigate = useNavigate();
-  const { getChats, chats, isCheckingProfiles, getMessages, messages } =
+  const { getChats, chats, isCheckingProfiles, selectedUser, setSelectedUser } =
     useAuthStore();
   useEffect(() => {
     getChats();
-    console.log(chats);
   }, [getChats]);
+
+  const handleProfile = (id) => {
+    setSelectedUser(id);
+    console.log(id);
+    navigate(`/chat/${id}`);
+  };
 
   if (!chats || isCheckingProfiles) {
     return (
@@ -28,19 +33,16 @@ const ChatProfiles = () => {
           <li>
             <h2 className="menu-title">Chats</h2>
             <ul>
-              {console.log(chats)}
               {chats &&
                 chats?.map((chat) => (
                   <li key={chat._id}>
                     <button
                       onClick={() => {
-                        navigate(`/chat/${chat._id}`);
-                        console.log(chat._id);
+                        handleProfile(chat._id);
                       }}
                     >
                       {chat.name}
                     </button>
-                    {console.log(typeof chat._id)}
                   </li>
                 ))}
             </ul>

@@ -1,5 +1,6 @@
 import User from "../Models/userModel.js";
 import Message from "../Models/messageModel.js";
+import { getReceiverSocketId, io } from "../Lib/socket.js";
 const getChats = async (req, res) => {
   try {
     const userId = req.user._id;
@@ -29,6 +30,11 @@ const sendMessage = async (req, res) => {
 
     await newMessage.save();
 
+    const receiverSocketId = getReceiverSocketId(id);
+    if (receiverSocketId) {
+      io.to(receiverSocketId).emit("message", newMessage);
+    }
+
     res.status(200).json({ newMessage });
   } catch (error) {
     return res.status(500).json({ message: error.message });
@@ -38,8 +44,7 @@ const sendMessage = async (req, res) => {
 const getMessages = async (req, res) => {
   try {
     const sender = req.user._id;
-    const { id: receiver } = req.params;
-
+    const receiver = req.params.id;
     const messages = await Message.find({
       $or: [
         { from: sender, to: receiver },

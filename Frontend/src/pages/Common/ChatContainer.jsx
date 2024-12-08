@@ -4,17 +4,32 @@ import { useParams } from "react-router-dom";
 
 const ChatContainer = () => {
   const receiverId = useParams();
-  const { messages, getMessages, authUser, loadingMessages, sendMessage } =
-    useAuthStore();
+  const {
+    messages,
+    getMessages,
+    authUser,
+    loadingMessages,
+    sendMessage,
+    selectedUser,
+    setSelectedUser,
+    subscribeToMessages,
+    unsubscribeFromMessages,
+  } = useAuthStore();
 
   useEffect(() => {
-    getMessages(receiverId.id);
-  }, [getMessages]);
+    if (!selectedUser) return;
+    console.log("Selected User: ", selectedUser);
+    getMessages(selectedUser);
+    subscribeToMessages();
+    return () => {
+      unsubscribeFromMessages();
+    };
+  }, [getMessages, selectedUser, subscribeToMessages, unsubscribeFromMessages]);
 
   const [message, setMessage] = useState("");
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await sendMessage(receiverId.id, { message: message });
+    await sendMessage(selectedUser, { message: message });
     setMessage("");
   };
 
@@ -29,19 +44,30 @@ const ChatContainer = () => {
 
   return (
     <div className="fixed bottom-0 left-0 right-0 p-4 bg-transparent">
-      <div className="w-full h-full overflow-y-auto">
-        {messages?.messages?.map((message) => (
-          <div
-            key={message._id}
-            className={
-              message.from == authUser._id
-                ? "chat chat-end items-end"
-                : "chat chat-start items-start"
-            }
-          >
-            <div className="chat-bubble">{message.message}</div>
-          </div>
-        ))}
+      <div className="w-full h-full">
+        <div
+          className="overflow-y-auto"
+          style={{ maxHeight: "calc(100vh - 100px)" }}
+        >
+          {console.log(messages)}
+          {messages && messages.messages && messages.messages.length > 0 ? (
+            messages.messages.map((message, index) => (
+              <div
+                key={index}
+                className={
+                  message.from === authUser._id
+                    ? "chat chat-end items-end"
+                    : "chat chat-start items-start"
+                }
+              >
+                {console.log("THIS", message)}
+                <div className="chat-bubble">{message.message}</div>
+              </div>
+            ))
+          ) : (
+            <div>No messages yet.</div>
+          )}
+        </div>
         <div className="flex items-center mt-8 space-x-4">
           <input
             type="text"
