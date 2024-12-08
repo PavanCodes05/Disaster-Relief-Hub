@@ -21,11 +21,12 @@ const Notification = ({ notification }) => {
           <p className="card-normal">{notification.description}</p>
           <p className="card-side">From: {notification.from.name}</p>
           <p className="card-side">To: {notification.to.name}</p>
+          <h3>CHAT WITH THEM FOR LOGISTICS 🫲!</h3>
           <div className="card-actions justify-end">
             <button
               className="btn"
               onClick={() => {
-                navigate(`/chat/${notification.from._id}`);
+                navigate("/chatprofiles");
               }}
             >
               Chat

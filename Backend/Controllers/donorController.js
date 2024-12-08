@@ -149,7 +149,7 @@ const makeDonation = async (req, res) => {
     await receiver.save();
 
     // Notification
-    const notification = new Notification({
+    const affectedNotification = new Notification({
       title: "Donation",
       description: `${req.user.name} has donated you ${donations.map(
         (donation) => `${donation.quantity} ${donation.resource}`
@@ -158,7 +158,21 @@ const makeDonation = async (req, res) => {
       to: post.user._id,
       type: "donation",
     });
-    await notification.save();
+
+    const donorNotification = new Notification({
+      title: "Donation Accepted",
+      description: `${
+        req.user.name
+      } has accepted your donation of ${donations.map(
+        (donation) => `${donation.quantity} ${donation.resource}`
+      )}`,
+      from: post.user._id,
+      to: req.user._id,
+      type: "donation",
+    });
+
+    await affectedNotification.save();
+    await donorNotification.save();
 
     return res.status(200).json({ message: "Donation successful" });
   } catch (error) {

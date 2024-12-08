@@ -176,6 +176,7 @@ const useAuthStore = create((set, get) => ({
     if (!selectedUser || !socket) return;
 
     socket.on("message", (newMessage) => {
+      if (newMessage.from !== selectedUser) return;
       set((state) => {
         const updatedMessages = [...state.messages.messages, newMessage];
         return { messages: { ...state.messages, messages: updatedMessages } };

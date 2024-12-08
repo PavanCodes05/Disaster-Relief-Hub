@@ -1,9 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import useAuthStore from "../../store/useAuthStore";
 import { useParams } from "react-router-dom";
 
 const ChatContainer = () => {
   const receiverId = useParams();
+
+  const messageEndRef = useRef(null);
+
   const {
     messages,
     getMessages,
@@ -25,6 +28,12 @@ const ChatContainer = () => {
       unsubscribeFromMessages();
     };
   }, [getMessages, selectedUser, subscribeToMessages, unsubscribeFromMessages]);
+
+  useEffect(() => {
+    if (messageEndRef.current) {
+      messageEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages]);
 
   const [message, setMessage] = useState("");
   const handleSubmit = async (e) => {
@@ -59,6 +68,7 @@ const ChatContainer = () => {
                     ? "chat chat-end items-end"
                     : "chat chat-start items-start"
                 }
+                ref={messageEndRef}
               >
                 {console.log("THIS", message)}
                 <div className="chat-bubble">{message.message}</div>
