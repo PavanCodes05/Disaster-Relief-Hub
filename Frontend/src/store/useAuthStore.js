@@ -10,6 +10,8 @@ const useAuthStore = create((set) => ({
   notifications: null,
   chats: [],
   isCheckingProfiles: false,
+  messages: [],
+  loadingMessages: false,
 
   isCheckingAuth: true,
 
@@ -89,6 +91,28 @@ const useAuthStore = create((set) => ({
       console.log(error);
     } finally {
       set({ isCheckingProfiles: false });
+    }
+  },
+
+  getMessages: async (id) => {
+    set({ loadingMessages: true });
+    try {
+      const response = await axiosInstance.get(`/chats/getmessages/${id}`);
+      set({ messages: response.data });
+      console.log(response.data);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      set({ loadingMessages: false });
+    }
+  },
+
+  sendMessage: async (id, data) => {
+    try {
+      const response = await axiosInstance.post(`/chats/send/${id}`, data);
+      console.log(response.data);
+    } catch (error) {
+      console.log(error);
     }
   },
 }));

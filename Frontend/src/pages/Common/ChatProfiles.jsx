@@ -1,9 +1,13 @@
 import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import useAuthStore from "../../store/useAuthStore";
 import { Loader } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const ChatProfiles = () => {
-  const { getChats, chats, isCheckingProfiles } = useAuthStore();
+  const navigate = useNavigate();
+  const { getChats, chats, isCheckingProfiles, getMessages, messages } =
+    useAuthStore();
   useEffect(() => {
     getChats();
     console.log(chats);
@@ -28,12 +32,21 @@ const ChatProfiles = () => {
               {chats &&
                 chats?.map((chat) => (
                   <li key={chat._id}>
-                    <a>{chat.name}</a>
+                    <button
+                      onClick={() => {
+                        navigate(`/chat/${chat._id}`);
+                        console.log(chat._id);
+                      }}
+                    >
+                      {chat.name}
+                    </button>
+                    {console.log(typeof chat._id)}
                   </li>
                 ))}
             </ul>
           </li>
         </ul>
+        {}
       </div>
     </div>
   );
